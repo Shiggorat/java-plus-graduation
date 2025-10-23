@@ -15,4 +15,8 @@
         <module>main-service</module>
     </modules>
 
+    <properties>
+        <querydsl.version>5.1.0</querydsl.version>
+    </properties>
+
 </project>

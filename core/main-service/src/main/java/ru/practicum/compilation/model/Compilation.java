@@ -28,17 +28,4 @@ public class Compilation {
     Boolean pinned;
     @Column(name = "title")
     String title;
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Compilation compilation = (Compilation) o;
-        return id != null && id.equals(compilation.id);
-    }
-
-    @Override
-    public int hashCode() {
-        return getClass().hashCode();
-    }
 }

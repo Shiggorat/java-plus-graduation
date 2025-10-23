@@ -7,7 +7,6 @@ import ru.practicum.compilation.model.Compilation;
 
 import java.util.List;
 
-@Repository
 public interface CompilationRepository extends JpaRepository<Compilation, Long> {
     List<Compilation> findAllByPinned(Boolean pinned, PageRequest pageRequest);
 }

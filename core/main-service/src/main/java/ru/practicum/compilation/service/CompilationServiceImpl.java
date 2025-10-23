@@ -20,6 +20,9 @@ import ru.practicum.event.repository.EventRepository;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Service
@@ -74,15 +77,30 @@ public class CompilationServiceImpl implements CompilationService {
         Boolean isPinned = param.getIsPinned();
         int from = param.getFrom();
         int size = param.getSize();
+
         List<Compilation> compilations = compilationRepository.findAllByPinned(isPinned, PageRequest.of(from / size, size));
+
+        Set<Long> eventIds = compilations.stream()
+                .flatMap(c -> c.getEvents().stream())
+                .map(Event::getId)
+                .collect(Collectors.toSet());
+
+        List<Long> eventIdList = new ArrayList<>(eventIds);
+
+        List<Event> events = eventRepository.findAllByIdIn(eventIdList);
+
+        Map<Long, Event> eventMap = events.stream()
+                .collect(Collectors.toMap(Event::getId, Function.identity()));
 
         List<CompilationDto> compilationDtoList = new ArrayList<>();
         for (Compilation compilation : compilations) {
-            List<Event> eventList = eventRepository.findAllByIdIn(compilation.getEvents().stream().map(Event::getId)
-                    .collect(Collectors.toList()));
+            List<Event> eventList = compilation.getEvents().stream()
+                    .map(eventMap::get)
+                    .collect(Collectors.toList());
             CompilationDto compilationDto = mapToDto(compilation, eventList);
             compilationDtoList.add(compilationDto);
         }
+
         return compilationDtoList;
     }
 
