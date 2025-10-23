@@ -1,0 +1,77 @@
+spring:
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+      routes:
+        - id: event_route_admin
+          uri: lb://main-service
+          predicates:
+            - Path=/admin/events/**
+        - id: event_route_user
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/events/**
+        - id: event_route_public
+          uri: lb://main-service
+          predicates:
+            - Path=/events/**
+        - id: event_route_top
+          uri: lb://main-service
+          predicates:
+            - Path=/events/top-liked/**
+
+        - id: category_route_admin
+          uri: lb://main-service
+          predicates:
+            - Path=/admin/categories/**
+        - id: category_route_public
+          uri: lb://main-service
+          predicates:
+            - Path=/categories/**
+
+        - id: compilation_route_admin
+          uri: lb://main-service
+          predicates:
+            - Path=/admin/compilations/**
+        - id: compilation_route_public
+          uri: lb://main-service
+          predicates:
+            - Path=/compilations/**
+
+        - id: rating_route
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/events/*/ratings/**
+
+        - id: request_route_user
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/requests/**
+        - id: request_route_event
+          uri: lb://main-service
+          predicates:
+            - Path=/users/*/events/*/requests/**
+
+        - id: user_route_root
+          uri: lb://main-service
+          predicates:
+            - Path=/admin/users
+        - id: user_route_all
+          uri: lb://main-service
+          predicates:
+            - Path=/admin/users/**
+
+        - id: stats_route
+          uri: lb://stats-server
+          predicates:
+            - Path=/stats/**
+        - id: hit_route
+          uri: lb://stats-server
+          predicates:
+            - Path=/hit/**
+
+server:
+  port: 8080
+
