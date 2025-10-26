@@ -8,9 +8,9 @@ spring:
       server:
         native:
           searchLocations:
-            - classpath:config/{application}
             - classpath:config/stats/{application}
             - classpath:config/infra/{application}
+            - classpath:config/core/{application}
 server:
   port: 0
 eureka:

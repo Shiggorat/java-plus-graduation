@@ -35,6 +35,8 @@
 		<lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
 		<mapstruct.version>1.6.3</mapstruct.version>
 		<spring-cloud-dependencies.version>2024.0.1</spring-cloud-dependencies.version>
+		<query-dls.version>5.1.0</query-dls.version>
+		<postgres.version>42.7.7</postgres.version>
 
 		<!--       Plugins       -->
 		<maven-compiler-plugin.version>3.11.0</maven-compiler-plugin.version>
@@ -81,6 +83,12 @@
 			<version>${mapstruct.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.postgresql</groupId>
+			<artifactId>postgresql</artifactId>
+			<version>${postgres.version}</version>
+		</dependency>
+
 		<!--    GRPC dependencies management        -->
 		<dependency>
 			<groupId>net.devh</groupId>
@@ -111,6 +119,12 @@
 			<version>${spring-cloud-dependencies.version}</version>
 			<type>pom</type>
 			<scope>import</scope>
+		</dependency>
+		<dependency>
+			<groupId>com.querydsl</groupId>
+			<artifactId>querydsl-jpa</artifactId>
+			<classifier>jakarta</classifier>
+			<version>${query-dls.version}</version>
 		</dependency>
 	</dependencies>
 	</dependencyManagement>
