@@ -51,6 +51,7 @@ public class EventServiceImpl implements EventService {
     private final RequestClient requestClient;
 
     @Override
+    @Transactional
     public EventFullDto add(EventNewDto newEvent, long userId) {
         LocalDateTime eventDate = newEvent.getEventDate();
         if (eventDate.isBefore(LocalDateTime.now().plusHours(2))) {
@@ -240,7 +241,6 @@ public class EventServiceImpl implements EventService {
         return eventRepository.findAllByIdIn(eventsIds);
     }
 
-    @Transactional
     private Event saveEvent(EventNewDto newEvent, long userId) {
         long categoryId = newEvent.getCategory();
         Category category = categoryService.findByIdOrThrow(categoryId);
