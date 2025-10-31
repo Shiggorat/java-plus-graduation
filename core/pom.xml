@@ -12,11 +12,11 @@
     <artifactId>core</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>main-service</module>
+        <module>event-service</module>
+        <module>user-service</module>
+        <module>request-service</module>
+        <module>rating-service</module>
+        <module>interaction-api</module>
     </modules>
-
-    <properties>
-        <querydsl.version>5.1.0</querydsl.version>
-    </properties>
 
 </project>

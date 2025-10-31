@@ -5,61 +5,61 @@ spring:
         locator:
           enabled: true
       routes:
+        - id: request_route_user
+          uri: lb://request-service
+          predicates:
+            - Path=/users/*/requests/**
+        - id: request_route_event
+          uri: lb://request-service
+          predicates:
+            - Path=/users/*/events/*/requests/**
+
+        - id: rating_route
+          uri: lb://rating-service
+          predicates:
+            - Path=/users/*/events/*/ratings/**
+
         - id: event_route_admin
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/admin/events/**
         - id: event_route_user
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/users/*/events/**
         - id: event_route_public
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/events/**
         - id: event_route_top
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/events/top-liked/**
 
         - id: category_route_admin
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/admin/categories/**
         - id: category_route_public
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/categories/**
 
         - id: compilation_route_admin
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/admin/compilations/**
         - id: compilation_route_public
-          uri: lb://main-service
+          uri: lb://event-service
           predicates:
             - Path=/compilations/**
 
-        - id: rating_route
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/events/*/ratings/**
-
-        - id: request_route_user
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/requests/**
-        - id: request_route_event
-          uri: lb://main-service
-          predicates:
-            - Path=/users/*/events/*/requests/**
-
         - id: user_route_root
-          uri: lb://main-service
+          uri: lb://user-service
           predicates:
             - Path=/admin/users
         - id: user_route_all
-          uri: lb://main-service
+          uri: lb://user-service
           predicates:
             - Path=/admin/users/**
 
