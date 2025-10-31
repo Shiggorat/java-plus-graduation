@@ -1,0 +1,22 @@
+package ru.practicum.user.dto;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
+@Getter
+@Setter
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class NewUserRequest {
+    @NotNull(message = "name должно быть указано.")
+    @NotBlank(message = "name не должен быть пустым.")
+    private String name;
+    @NotNull(message = "email должно быть указано.")
+    @NotBlank(message = "email не должен быть пустым.")
+    @Email(message = "Поле email должно быть указано корректно.")
+    private String email;
+}

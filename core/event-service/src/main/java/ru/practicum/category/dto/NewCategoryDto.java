@@ -1,0 +1,17 @@
+package ru.practicum.category.dto;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
+import lombok.*;
+
+@Getter
+@Setter
+@Builder
+@ToString
+@NoArgsConstructor
+@AllArgsConstructor
+public class NewCategoryDto {
+    @NotBlank(message = "Поле name не должно быть пустым.")
+    @Size(min = 1, max = 50, message = "Поле name должно быть до 50 символов")
+    private String name;
+}
