@@ -31,6 +31,11 @@ public interface RequestRepository extends JpaRepository<Request, Long> {
 
     boolean existsByEventIdAndRequesterId(long eventId, long requesterId);
 
+    @Query("select case when count(r) > 0 then true else false end " +
+            "from Request r " +
+            "where r.requesterId = :requesterId and r.eventId = :eventId and r.status = 'CONFIRMED'")
+    boolean isUserParticipant(long requesterId, long eventId);
+
     interface EventRequestCount {
         Long getEventId();
 

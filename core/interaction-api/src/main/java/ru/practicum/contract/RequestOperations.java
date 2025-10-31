@@ -15,4 +15,7 @@ public interface RequestOperations {
 
     @GetMapping("/count/{eventId}")
     int getCountConfirmedRequestsByEventId(@PathVariable Long eventId);
+
+    @PostMapping("{eventId}/participant/{userId}")
+    boolean isUserParticipant(@PathVariable long userId, @PathVariable long eventId);
 }

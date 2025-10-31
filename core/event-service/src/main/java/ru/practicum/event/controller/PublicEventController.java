@@ -5,8 +5,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.client.StatsClientService;
-import ru.practicum.dto.StatDto;
 import ru.practicum.event.dto.EventFullDto;
 import ru.practicum.event.dto.EventPublicParam;
 import ru.practicum.event.dto.EventShortDto;
@@ -22,7 +20,6 @@ import java.util.List;
 public class PublicEventController {
 
     private final EventService eventService;
-    private final StatsClientService statsClient;
 
     @GetMapping
     public List<EventShortDto> getAll(@RequestParam(required = false) String text,
@@ -46,16 +43,21 @@ public class PublicEventController {
         eventPublicParam.setSort(sort);
         eventPublicParam.setFrom(from);
         eventPublicParam.setSize(size);
-        List<EventShortDto> events = eventService.getAllPublic(eventPublicParam);
-        statsClient.hit(new StatDto("ewm-main-service", requestUri, clientIp, LocalDateTime.now()));
-        return events;
+        return eventService.getAllPublic(eventPublicParam);
     }
 
     @GetMapping("/{id}")
-    public EventFullDto getById(@PathVariable long id, HttpServletRequest request) {
-        String clientIp = request.getRemoteAddr();
-        String requestUri = request.getRequestURI();
-        return eventService.getByIdPublic(id, new StatDto("ewm-main-service", requestUri, clientIp,
-                LocalDateTime.now()));
+    public EventFullDto getById(@PathVariable long id, @RequestHeader("X-EWM-USER-ID") long userId) {
+        return eventService.getByIdPublic(id, userId);
+    }
+
+    @GetMapping("/recommendations")
+    public List<EventShortDto> getRecommendationsForUser(@RequestHeader("X-EWM-USER-ID") long userId) {
+        return eventService.getRecommendations(userId);
+    }
+
+    @PutMapping("/{eventId}/like")
+    public void like(@RequestHeader("X-EWM-USER-ID") long userId, @PathVariable long eventId) {
+        eventService.like(userId, eventId);
     }
 }
