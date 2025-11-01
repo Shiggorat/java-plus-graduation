@@ -34,4 +34,10 @@ public class InternalRequestController implements RequestOperations {
         log.info("Посчитанные запросы для мероприятия {}: {}", eventId, requestCount);
         return requestCount;
     }
+
+    @Override
+    @PostMapping("{eventId}/participant/{userId}")
+    public boolean isUserParticipant(long userId, long eventId) {
+        return requestService.isUserParticipant(userId, eventId);
+    }
 }

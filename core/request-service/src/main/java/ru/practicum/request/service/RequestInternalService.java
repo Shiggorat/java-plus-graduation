@@ -8,4 +8,6 @@ public interface RequestInternalService {
     Map<Long, Integer> getCountConfirmedRequestsByEventIds(List<Long> eventsIds);
 
     int getCountConfirmedRequestsByEventId(Long eventId);
+
+    boolean isUserParticipant(long userId, long eventId);
 }

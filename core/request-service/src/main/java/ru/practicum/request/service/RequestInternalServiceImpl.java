@@ -27,4 +27,9 @@ public class RequestInternalServiceImpl implements RequestInternalService {
     public int getCountConfirmedRequestsByEventId(Long eventId) {
         return requestRepository.findCountOfConfirmedRequestsByEventId(eventId);
     }
+
+    @Override
+    public boolean isUserParticipant(long userId, long eventId) {
+        return requestRepository.isUserParticipant(userId, eventId);
+    }
 }

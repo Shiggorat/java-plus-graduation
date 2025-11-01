@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+package stats.service.dashboard;
+
+option java_multiple_files = true;
+option java_package = "ru.practicum.ewm.stats.proto";
+
+import "stats/message/user_predictions_request.proto";
+import "stats/message/recommended_event.proto";
+import "stats/message/similar_event_request.proto";
+import "stats/message/interactions_count_request.proto";
+
+service RecommendationsController {
+
+  rpc GetRecommendationsForUser (message.action.UserPredictionsRequestProto)
+      returns (stream message.action.RecommendedEventProto); // с оценкой
+
+  rpc GetSimilarEvents (message.action.SimilarEventsRequestProto)
+      returns (stream message.action.RecommendedEventProto); // с коэффициентом подобия
+
+  rpc GetInteractionsCount (message.action.InteractionsCountRequestProto)
+      returns (stream message.action.RecommendedEventProto); // с суммой максимальных весов действий каждого пользователя
+
+}

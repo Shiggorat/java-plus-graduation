@@ -10,6 +10,8 @@ import ru.practicum.enums.event.EventState;
 import ru.practicum.enums.request.RequestStatus;
 import ru.practicum.errors.exceptions.ConditionsNotMetException;
 import ru.practicum.errors.exceptions.NotFoundException;
+import ru.practicum.grpc.ActionType;
+import ru.practicum.grpc.CollectorGrpcClient;
 import ru.practicum.request.dto.EventRequestStatusUpdateRequest;
 import ru.practicum.request.dto.EventRequestStatusUpdateResult;
 import ru.practicum.request.dto.ParticipationRequestDto;
@@ -29,11 +31,12 @@ public class RequestServiceImpl implements RequestService {
     private final EventClient eventClient;
     private final RequestRepository requestRepository;
     private final RequestMapper requestMapper;
+    private final CollectorGrpcClient collectorGrpcClient;
 
     @Override
     public ParticipationRequestDto createParticipationRequest(long userId, long eventId) {
 
-        if (requestRepository.existsByEventIdAndRequesterId(eventId, userId)){
+        if (requestRepository.existsByEventIdAndRequesterId(eventId, userId)) {
             throw new ConditionsNotMetException("Нельзя добавить повторный запрос на участие в событии");
         }
 
@@ -50,6 +53,8 @@ public class RequestServiceImpl implements RequestService {
         checkParticipantLimit(event.getParticipantLimit(), getConfirmedRequests(eventId));
 
         userClient.checkUserExists(userId);
+
+        collectorGrpcClient.collectUserActions(userId, eventId, ActionType.ACTION_REGISTER);
 
         return requestMapper.toDto(saveRequest(event, userId));
     }
@@ -135,6 +140,7 @@ public class RequestServiceImpl implements RequestService {
 
         return requestRepository.save(request);
     }
+
     private void checkParticipantLimit(int participantLimit, int confirmedRequests) {
         if (confirmedRequests >= participantLimit && participantLimit != 0) {
             throw new ConditionsNotMetException("У события заполнен лимит участников");
