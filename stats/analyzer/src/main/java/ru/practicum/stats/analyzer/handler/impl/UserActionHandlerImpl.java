@@ -31,7 +31,7 @@ public class UserActionHandlerImpl implements UserActionHandler {
         userActionService.save(userAction);
     }
 
-    UserAction map(UserActionAvro userActionAvro) {
+    private UserAction map(UserActionAvro userActionAvro) {
         return UserAction.builder()
                 .userId(userActionAvro.getUserId())
                 .eventId(userActionAvro.getEventId())

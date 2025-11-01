@@ -78,21 +78,61 @@ public class RecommendationServiceImpl implements RecommendationService {
 
     private Map<Long, Double> predictScores(List<EventSimilarity> similarities, List<Long> userEvents) {
         Map<Long, Double> scoreByEvent = new HashMap<>();
+
+        Set<Long> allEventIds = new HashSet<>();
+        for (EventSimilarity s : similarities) {
+            allEventIds.add(s.getEventA());
+            allEventIds.add(s.getEventB());
+        }
+        allEventIds.addAll(userEvents);
+
+        Map<Long, List<EventSimilarity>> neighboursMap = new HashMap<>();
+        for (Long eventId : allEventIds) {
+            List<EventSimilarity> neighbours = eventSimilarityRepository.findNeighbours(eventId, PageRequest.of(0,
+                    5, Sort.by(Sort.Direction.DESC, "score")));
+            neighboursMap.put(eventId, neighbours);
+        }
+
+        Set<Long> neighboursIds = new HashSet<>();
+        for (Map.Entry<Long, List<EventSimilarity>> entry : neighboursMap.entrySet()) {
+            for (EventSimilarity n : entry.getValue()) {
+                long eventA = n.getEventA();
+                long eventB = n.getEventB();
+                Long neighbourId = (eventA == entry.getKey()) ? eventB : eventA;
+                neighboursIds.add(neighbourId);
+            }
+        }
+
+        List<UserAction> allUserActions = userActionRepository.findByEventIdIn(neighboursIds);
+        Map<Long, List<UserAction>> userActionsMap = new HashMap<>();
+        for (UserAction ua : allUserActions) {
+            long eventId = ua.getEventId();
+            userActionsMap.computeIfAbsent(eventId, k -> new ArrayList<>()).add(ua);
+        }
+
         for (EventSimilarity s : similarities) {
             long candidate = userEvents.contains(s.getEventA()) ? s.getEventB() : s.getEventA();
 
-            PageRequest pageRequest = PageRequest.of(0, 5,
-                    Sort.by(Sort.Direction.DESC, "score"));
-            List<EventSimilarity> neighbours = eventSimilarityRepository.findNeighbours(candidate, pageRequest);
+            List<EventSimilarity> neighbours = neighboursMap.get(candidate);
 
-            List<Long> neighboursIds = neighbours.stream().map(n -> (n.getEventA() == candidate) ? n.getEventB()
-                    : n.getEventA()).toList();
-            List<UserAction> userActions = userActionRepository.findByEventIdIn(new HashSet<>(neighboursIds));
+            List<Long> neighboursIdsList = neighbours.stream()
+                    .map(n -> {
+                        long eventA = n.getEventA();
+                        long eventB = n.getEventB();
+                        return (eventA == candidate) ? eventB : eventA;
+                    })
+                    .toList();
+
+            List<UserAction> userActions = new ArrayList<>();
+            for (Long neighbourId : neighboursIdsList) {
+                List<UserAction> actions = userActionsMap.getOrDefault(neighbourId, Collections.emptyList());
+                userActions.addAll(actions);
+            }
 
             double predictedScore = calculatePredictedScore(neighbours, userActions, candidate);
-
             scoreByEvent.put(candidate, predictedScore);
         }
+
         return scoreByEvent;
     }
 

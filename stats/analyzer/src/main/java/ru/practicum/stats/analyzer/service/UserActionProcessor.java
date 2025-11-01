@@ -78,9 +78,6 @@ public class UserActionProcessor implements Runnable {
     }
 
     private void handleRecord(ConsumerRecord<Long, SpecificRecordBase> record) {
-        /*log.debug("Получено сообщение из Kafka: topic={}, partition={}, offset={}, key={}, valueClass={}",
-                record.topic(), record.partition(), record.offset(), record.key(),
-                record.value() != null ? record.value().getClass().getName() : "null");*/
         if (record.value() instanceof UserActionAvro userActionAvro) {
             log.info("Пришло действие пользователя: userId = {}, eventId = {}, type = {}",
                     userActionAvro.getUserId(), userActionAvro.getEventId(), userActionAvro.getActionType());

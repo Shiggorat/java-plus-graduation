@@ -18,7 +18,7 @@ public class SimilarityHandlerImpl implements SimilarityHandler {
         eventSimilarityService.save(eventSimilarity);
     }
 
-    EventSimilarity map(EventSimilarityAvro eventSimilarityAvro) {
+    private EventSimilarity map(EventSimilarityAvro eventSimilarityAvro) {
         return EventSimilarity.builder()
                 .eventA(eventSimilarityAvro.getEventA())
                 .eventB(eventSimilarityAvro.getEventB())
